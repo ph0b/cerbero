@@ -5,7 +5,7 @@ class Recipe(recipe.Recipe):
     version = '3.2.1'
     remotes = {'origin': 'https://github.com/atgreen/{0}.git'.format(name),
                'centricular': 'https://github.com/centricular/{0}.git'.format(name)}
-    commit = 'centricular/meson'
+    commit = 'centricular/meson-1.10'
     licenses = [License.BSD_like]
     btype = BuildType.MESON
 
