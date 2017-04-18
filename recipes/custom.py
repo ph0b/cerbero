@@ -14,7 +14,7 @@ class GStreamerBase:
 
     licenses = [License.LGPLv2Plus]
     version = '1.10'
-    commit = '1.10.4'
+    commit = '1.10'
 
 class GStreamer(GStreamerBase, recipe.Recipe):
 
