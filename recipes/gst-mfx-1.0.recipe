@@ -1,0 +1,23 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+import shutil
+
+class Recipe(custom.GStreamer):
+    name = 'gst-mfx-1.0'
+    remotes = {'origin': 'git://github.com/ph0b/gstreamer-media-SDK'}
+    commit = 'origin/1.10'
+    licenses = [License.LGPLv2_1Plus]
+    btype = BuildType.MESON
+    deps = ['gstreamer-1.0', 
+            'gst-plugins-base-1.0',
+            'gst-plugins-bad-1.0', #for gstgl, as well as pbutils and codecsparser required by VC1 parsers
+            'libmfx']
+
+    platform_deps = {
+        Platform.WINDOWS:  ['mingw-runtime'],
+    }
+
+    file_libs = ['libgstmfx']
+
+    def prepare(self):
+        self.append_env['CFLAGS'] = os.environ['DIRECTX_CFLAGS'] # didn't find another way to get d3d**.h includes working, but this shouldn't be needed when using newer mingw builds.
+

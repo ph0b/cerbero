@@ -1,0 +1,26 @@
+From c661b98b71a29a9c331cf41a3cb499b2445ca43d Mon Sep 17 00:00:00 2001
+From: Xavier Hallade <xavier.hallade@intel.com>
+Date: Tue, 25 Jul 2017 17:49:14 +0200
+Subject: [PATCH 1/2] include FindFunctions.cmake in api's CMakeList.txt
+
+it allows building mfx_dispatch standalone with cmake.
+---
+ api/opensource/mfx_dispatch/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/api/opensource/mfx_dispatch/CMakeLists.txt b/api/opensource/mfx_dispatch/CMakeLists.txt
+index 9d87b9f..bf0cdc2 100644
+--- a/api/opensource/mfx_dispatch/CMakeLists.txt
++++ b/api/opensource/mfx_dispatch/CMakeLists.txt
+@@ -21,6 +21,8 @@
+ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
+ project( mfx )
+ 
++include(../../../lib/builder/FindFunctions.cmake)
++
+ set( CMAKE_VERBOSE_MAKEFILE             TRUE )
+ set( CMAKE_LIB_DIR ${CMAKE_BINARY_DIR}/__lib )
+ 
+-- 
+2.13.0
+

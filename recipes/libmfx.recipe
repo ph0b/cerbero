@@ -1,0 +1,29 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+import shutil
+
+from cerbero.tools.libtool import LibtoolLibrary
+
+class Recipe(recipe.Recipe):
+    name = 'libmfx'
+    version = '1.21'
+    licenses = [License.MIT]
+    patches = ['libmfx/0001-include-FindFunctions.cmake-in-api-s-CMakeList.txt.patch',
+               'libmfx/0002-define-sscanf_s-when-old-GCC-MinGW-isn-t-providing-it.patch']
+    remotes = {'origin': 'git://github.com/Intel-Media-SDK/MediaSDK'}
+    commit = '971a857285bddac0232743f6740573e8430d8523' # 1.21
+    srcdir = 'api/opensource/mfx_dispatch'
+    btype = BuildType.CMAKE
+    platform_deps = {
+        Platform.WINDOWS:  ['mingw-runtime'],
+    }
+
+    def prepare(self):
+        self.append_env['MFX_HOME'] = "../../../"
+        self.append_env['CXXFLAGS'] = os.environ['DIRECTX_CFLAGS'] # didn't find another way to get d3d**.h includes working, but this shouldn't be needed when using newer mingw builds.
+
+    def install(self):
+        super(recipe.Recipe, self).install()
+        shutil.copy(
+                os.path.join(self.config.prefix, 'lib', 'lin_x86', 'pkgconfig', 'mfx.pc'),
+                os.path.join(self.config.prefix, 'lib', 'pkgconfig', 'mfx.pc'))
+
