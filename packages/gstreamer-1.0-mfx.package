@@ -1,0 +1,14 @@
+# vi:si:et:sw=4:sts=4:ts=4:syntax=python
+# -*- Mode: Python -*-
+
+
+class Package(custom.GStreamer, package.Package):
+
+    name = 'gstreamer-1.0-mfx'
+    shortdesc = 'GStreamer 1.0 Intel Media SDK plugin'
+    longdesc = 'GStreamer 1.0 Intel Media SDK (MFX) plugin'
+    uuid = '6555cb05-484e-4227-a511-1e1f64ddac48'
+    deps = ['gstreamer-1.0-core'] 
+
+    files = ['gst-mfx-1.0:plugins_sys']
+    files_devel = ['gst-mfx-1.0:plugins_sys_devel']

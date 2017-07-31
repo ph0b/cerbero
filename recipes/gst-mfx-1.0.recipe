@@ -12,7 +12,8 @@ class Recipe(custom.GStreamer):
             'gst-plugins-bad-1.0', #for gstgl, as well as pbutils and codecsparser required by VC1 parsers
             'libmfx']
 
-    file_libs = ['libgstmfx']
+    files_plugins_sys = ['lib/gstreamer-1.0/libgstmfx%(mext)s',
+                         'lib/gstreamer-1.0/gstmfx%(mext)s']
 
     def prepare(self):
         if self.config.target_platform == Platform.WINDOWS and not self.config.variants.visualstudio:

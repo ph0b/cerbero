@@ -33,6 +33,10 @@ class SDKPackage(custom.GStreamer, package.SDKPackage):
             Platform.WINDOWS: [
                 ('vsintegration-1.0', True, False),
                 ('gstreamer-1.0-vs-templates', True, False),
+                ('gstreamer-1.0-mfx', False, False),
+                ],
+            Platform.LINUX: [
+                ('gstreamer-1.0-mfx', False, False),
                 ],
             }
 
