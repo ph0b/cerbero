@@ -1,14 +1,14 @@
-From 3a6a13125c050bd9e2f2ad6ae249ac076dc57bd2 Mon Sep 17 00:00:00 2001
+From f71821f856b141e4f5a264b8cb2249182682b106 Mon Sep 17 00:00:00 2001
 From: Xavier Hallade <xavier.hallade@intel.com>
-Date: Tue, 25 Jul 2017 17:57:32 +0200
-Subject: [PATCH 2/2] define sscanf_s when old GCC-MinGW isn't providing it.
+Date: Mon, 31 Jul 2017 11:16:27 +0200
+Subject: [PATCH 2/3] define sscanf_s when old GCC-MinGW isn't providing it.
 
 ---
  api/opensource/mfx_dispatch/include/mfx_dispatcher_defs.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/api/opensource/mfx_dispatch/include/mfx_dispatcher_defs.h b/api/opensource/mfx_dispatch/include/mfx_dispatcher_defs.h
-index a2defb5..66ca602 100644
+index a2defb5..bebb7ff 100644
 --- a/api/opensource/mfx_dispatch/include/mfx_dispatcher_defs.h
 +++ b/api/opensource/mfx_dispatch/include/mfx_dispatcher_defs.h
 @@ -63,7 +63,7 @@ inline std::wstring getWideString(const char * string)
@@ -21,5 +21,5 @@ index a2defb5..66ca602 100644
  #define  swscanf_s swscanf
  #endif
 -- 
-2.13.0
+2.9.0.windows.1
 

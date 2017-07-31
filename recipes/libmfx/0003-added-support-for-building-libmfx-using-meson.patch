@@ -1,0 +1,136 @@
+From 341fbd73a7deeb4a410822b35cb27196a84ce4ae Mon Sep 17 00:00:00 2001
+From: Xavier Hallade <xavier.hallade@intel.com>
+Date: Mon, 31 Jul 2017 12:32:11 +0200
+Subject: [PATCH 3/3] added support for building libmfx using meson
+
+---
+ api/opensource/mfx_dispatch/meson.build | 117 ++++++++++++++++++++++++++++++++
+ 1 file changed, 117 insertions(+)
+ create mode 100644 api/opensource/mfx_dispatch/meson.build
+
+diff --git a/api/opensource/mfx_dispatch/meson.build b/api/opensource/mfx_dispatch/meson.build
+new file mode 100644
+index 0000000..efa1925
+--- /dev/null
++++ b/api/opensource/mfx_dispatch/meson.build
+@@ -0,0 +1,117 @@
++project('mfx', 'cpp', version : '1.21', license : 'MIT')
++
++sources = [
++  'src/main.cpp',
++  'src/mfx_critical_section.cpp',
++  'src/mfx_critical_section_linux.cpp',
++  'src/mfx_dispatcher.cpp',
++  'src/mfx_function_table.cpp',
++  'src/mfx_library_iterator.cpp',
++  'src/mfx_library_iterator_linux.cpp',
++  'src/mfx_load_dll.cpp',
++  'src/mfx_load_dll_linux.cpp',
++  'src/mfx_win_reg_key.cpp',
++  'src/mfx_dxva2_device.cpp',
++  'src/mfx_plugin_hive.cpp',
++  'src/mfx_plugin_hive_linux.cpp',
++  'src/mfx_plugin_cfg_parser.cpp',
++  'src/mfx_load_plugin.cpp',
++]
++
++cxx = meson.get_compiler('cpp')
++
++header_version_maj = cxx.get_define('MFX_VERSION_MAJOR', prefix : '#include "mfxvideo.h"', 
++                     include_directories: include_directories('../../include'))
++header_version_min = cxx.get_define('MFX_VERSION_MINOR', prefix : '#include "mfxvideo.h"', 
++                     include_directories: include_directories('../../include'))
++					 
++header_version = '@0@.@1@'.format(header_version_maj, header_version_min)
++
++if header_version != meson.project_version()
++  error('project defined version @0@ differs from the one found in headers: @1@'
++    .format(meson.project_version(), header_version))
++endif
++
++mfx_deps = []
++extra_args = ['-pipe', '-fPIC', '-Wno-unknown-pragmas', '-Wno-unused']
++
++if host_machine.system() == 'windows'
++  extra_args += ['-DMINGW_HAS_SECURE_API', '-DWIN32']
++  if host_machine.cpu_family() == 'x86_64'
++    extra_args += ['-DWIN64']
++  endif
++elif host_machine.system() == 'linux'
++  extra_args += ['-D__USE_LARGEFILE64', '-D_FILE_OFFSET_BITS=64',
++             '-DLINUX', '-DLINUX32']
++  if host_machine.cpu_family() == 'x86_64'
++    extra_args += ['-DLINUX64']
++  endif
++endif
++
++  
++if get_option('buildtype') == 'debug'
++  extra_args += ['-O0', '-Wall', '-g', '-D_DEBUG']
++elif get_option('buildtype') == 'debugoptimized'
++  extra_args += ['-O2', '-D_FORTIFY_SOURCE=2', '-fstack-protector',
++                 '-Wall', '-g', '-DNDEBUG']
++elif get_option('buildtype') == 'release'
++  extra_args += ['-O2', '-D_FORTIFY_SOURCE=2',
++                 '-fstack-protector', '-Wall', '-DNDEBUG']
++endif
++
++exported_headers = [
++  '../../include/mfxastructures.h',
++  '../../include/mfxaudio.h',
++  '../../include/mfxaudio++.h',
++  '../../include/mfxcommon.h',
++  '../../include/mfxdefs.h',
++  '../../include/mfxdispatcherprefixedfunctions.h',
++  '../../include/mfxenc.h',
++  '../../include/mfxfei.h',
++  '../../include/mfxjpeg.h',
++  '../../include/mfxla.h',
++  '../../include/mfxmvc.h',
++  '../../include/mfxpak.h',
++  '../../include/mfxplugin.h',
++  '../../include/mfxplugin++.h',
++  '../../include/mfxsession.h',
++  '../../include/mfxstructures.h',
++  '../../include/mfxvideo.h',
++  '../../include/mfxvideo++.h',
++  '../../include/mfxvp8.h',
++  '../../include/mfxvstructures.h',
++]
++
++install_headers(exported_headers)
++
++
++if host_machine.system() == 'windows'
++  mfx_deps += cxx.find_library('d3d9')
++else
++  mfx_deps += dependency ('libva')
++  mfx_deps += cxx.find_library('dl')
++endif
++
++# pkg-config file
++mfx_pc_conf = configuration_data()
++mfx_pc_conf.set('PROJECT_NAME', 'mfx')
++mfx_pc_conf.set('CMAKE_INSTALL_PREFIX', get_option('prefix'))
++mfx_pc_conf.set('INSTALL_LIB_PATH', get_option('libdir'))
++mfx_pc_conf.set('MFX_VERSION_MAJOR', header_version_maj)
++mfx_pc_conf.set('MFX_VERSION_MINOR', header_version_min)
++pkgconfigdir = get_option('libdir') + '/pkgconfig'
++configure_file(input : 'pkg-config.pc.cmake', output : 'mfx.pc',
++  configuration : mfx_pc_conf,
++    install_dir : pkgconfigdir)
++
++mfx_lib = static_library('mfx', sources,
++  c_args : extra_args,
++  include_directories :  include_directories('../../include', 'include'),
++  version: meson.project_version(),
++  name_prefix : '', name_suffix : 'lib', #gets the static lib named mfx.lib
++  install : true,
++  dependencies : mfx_deps,
++  link_args : ['-Wl,--no-undefined,-z,relro,-z,now,-z,noexecstack', '-fstack-protector'],
++)
++
++
+-- 
+2.9.0.windows.1
+

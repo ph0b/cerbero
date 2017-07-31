@@ -8,22 +8,19 @@ class Recipe(recipe.Recipe):
     version = '1.21'
     licenses = [License.MIT]
     patches = ['libmfx/0001-include-FindFunctions.cmake-in-api-s-CMakeList.txt.patch',
-               'libmfx/0002-define-sscanf_s-when-old-GCC-MinGW-isn-t-providing-it.patch']
+               'libmfx/0002-define-sscanf_s-when-old-GCC-MinGW-isn-t-providing-i.patch',
+               'libmfx/0003-added-support-for-building-libmfx-using-meson.patch']
     remotes = {'origin': 'git://github.com/Intel-Media-SDK/MediaSDK'}
     commit = '971a857285bddac0232743f6740573e8430d8523' # 1.21
     srcdir = 'api/opensource/mfx_dispatch'
-    btype = BuildType.CMAKE
-    platform_deps = {
-        Platform.WINDOWS:  ['mingw-runtime'],
-    }
+    btype = BuildType.MESON
 
     def prepare(self):
-        self.append_env['MFX_HOME'] = "../../../"
-        self.append_env['CXXFLAGS'] = os.environ['DIRECTX_CFLAGS'] # didn't find another way to get d3d**.h includes working, but this shouldn't be needed when using newer mingw builds.
-
-    def install(self):
-        super(recipe.Recipe, self).install()
-        shutil.copy(
-                os.path.join(self.config.prefix, 'lib', 'lin_x86', 'pkgconfig', 'mfx.pc'),
-                os.path.join(self.config.prefix, 'lib', 'pkgconfig', 'mfx.pc'))
+        if self.config.target_platform == Platform.WINDOWS and not self.config.variants.visualstudio: 
+            directx_incdir = ''
+            if self.config.target_arch == Architecture.X86:
+                directx_incdir = os.path.join(self.config.toolchain_prefix, 'i686-w64-mingw32', 'include', 'directx')
+            elif self.config.target_arch == Architecture.X86_64:
+                directx_incdir = os.path.join(self.config.toolchain_prefix, 'x86_64-w64-mingw32', 'include', 'directx')
+            self.append_env['CXXFLAGS'] = ' -I"%s" ' % directx_incdir # didn't find another way to get d3d**.h includes working, but this shouldn't be needed when using newer mingw builds.
 
