@@ -5,13 +5,13 @@ from cerbero.tools.libtool import LibtoolLibrary
 
 class Recipe(recipe.Recipe):
     name = 'libmfx'
-    version = '1.21'
+    version = '1.23'
     licenses = [License.MIT]
     patches = ['libmfx/0001-include-FindFunctions.cmake-in-api-s-CMakeList.txt.patch',
                'libmfx/0002-define-sscanf_s-when-old-GCC-MinGW-isn-t-providing-i.patch',
                'libmfx/0003-added-support-for-building-libmfx-using-meson.patch']
     remotes = {'origin': 'git://github.com/Intel-Media-SDK/MediaSDK'}
-    commit = '971a857285bddac0232743f6740573e8430d8523' # 1.21
+    commit = '295182a481f141ab89d7d1181c0f3ab3cd1571ff' # 1.23
     srcdir = 'api/opensource/mfx_dispatch'
     btype = BuildType.MESON
 

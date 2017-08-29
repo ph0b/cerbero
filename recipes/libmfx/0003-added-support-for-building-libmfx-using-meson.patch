@@ -14,7 +14,7 @@ index 0000000..efa1925
 --- /dev/null
 +++ b/api/opensource/mfx_dispatch/meson.build
 @@ -0,0 +1,117 @@
-+project('mfx', 'cpp', version : '1.21', license : 'MIT')
++project('mfx', 'cpp', version : '1.23', license : 'MIT')
 +
 +sources = [
 +  'src/main.cpp',
